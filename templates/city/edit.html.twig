@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit City{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Edit City</h1>
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.country) }}
+            {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.country) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.active) }}
+            {{ form_widget(form.active, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_errors(form.active) }}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_city') }}" class="btn btn-secondary mt-3">← Back to list</a>
+{% endblock %}
