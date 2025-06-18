@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Country List{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1>Country List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country in countries %}
+                <tr>
+                    <td>{{ country.id }}</td>
+                    <td>{{ country.name }}</td>
+                    <td>
+                        <a href="{{ path('app_country_edit', {'id': country.id}) }}">Edit</a>
+                        <a href="{{ path('app_country_delete', {'id': country.id}) }}" >Delete</a>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_country_add') }}">Create new country</a>
+</div>
+    
+{% endblock %}
