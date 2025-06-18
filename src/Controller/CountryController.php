@@ -18,9 +18,16 @@ class CountryController extends AbstractController
     }
 
     #[Route('/country', name: 'app_country')]
-    public function country(CountryRepository $countryRepository)
+    public function country(Request $request, CountryRepository $countryRepository)
     {
-        $countries =  $countryRepository->findAll();
+
+        $query = $request->query->get('search');
+
+        if ($query) {
+            $countries = $countryRepository->findBy(['name' => $query]);
+        } else {
+            $countries = $countryRepository->findAll();
+        }
 
         return $this->render('country/index.html.twig',[
             "countries" => $countries,

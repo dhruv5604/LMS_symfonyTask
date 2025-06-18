@@ -3,11 +3,19 @@
 {% block title %}Country List{% endblock %}
 
 {% block body %}
+    <h1 class="mb-4">Country List</h1>
 
-<div class="container">
-    <h1>Country List</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <form method="get" action="{{ path('app_country') }}" class="d-flex" role="search">
+            <input type="search" name="search" value="{{ app.request.get('search') }}"
+                   class="form-control me-2" placeholder="Search country name..." />
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </form>
 
-    <table>
+        <a href="{{ path('app_country_add') }}" class="btn btn-success">+ Add Country</a>
+    </div>
+
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -21,14 +29,16 @@
                     <td>{{ country.id }}</td>
                     <td>{{ country.name }}</td>
                     <td>
-                        <a href="{{ path('app_country_edit', {'id': country.id}) }}">Edit</a>
-                        <a href="{{ path('app_country_delete', {'id': country.id}) }}" >Delete</a>
+                        <a href="{{ path('app_country_edit', {'id': country.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ path('app_country_delete', {'id': country.id}) }}" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this country?')">Delete</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">No countries found.</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_country_add') }}">Create new country</a>
-</div>
-    
 {% endblock %}
