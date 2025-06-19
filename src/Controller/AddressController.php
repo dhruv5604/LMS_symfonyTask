@@ -117,7 +117,7 @@ class AddressController extends AbstractController
     public function getCities(Country $country): JsonResponse
     {
         $cities = $country->getCities();
-
+        // dd($cities);
         $data = [];
         foreach ($cities as $city) {
             $data[] = ['id' => $city->getId(), 'name' => $city->getName()];
