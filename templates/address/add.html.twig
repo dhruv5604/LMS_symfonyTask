@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Add Address {% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Add Address</h1>
+
+<div class="card shadow-sm p-4 mb-4">
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.country, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.country, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.country) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.city, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.city, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.city) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.streetName, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.streetName, {'attr': {'class': 'form-control', 'rows': 2}}) }}
+            {{ form_errors(form.streetName) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.postcode, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.postcode, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.postcode) }}
+        </div>
+        <button class="btn btn-success">Save</button>
+    {{ form_end(form) }}
+</div>
+
+<a href="{{ path('app_address') }}" class="btn btn-secondary mt-3">← Back to list</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const countrySelect = document.getElementById('address_type_form_country');
+        const citySelect = document.getElementById('address_type_form_city');
+        if (countrySelect && citySelect) {
+            countrySelect.addEventListener('change', function () {
+                const countryId = this.value;
+                citySelect.innerHTML = '<option>Loading...</option>';
+                citySelect.disabled = true;
+                fetch('/get-cities/' + countryId)
+                    .then(res => res.json())
+                    .then(data => {
+                        citySelect.innerHTML = '<option value="">Select a city</option>';
+                        data.forEach(city => {
+                            citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                        });
+                        citySelect.disabled = false;
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}
