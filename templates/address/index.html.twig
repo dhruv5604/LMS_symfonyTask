@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Country List{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Address List</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <input type="search" name="name" value="{{ filters.name|default('') }}"
+                            class="form-control" placeholder="Search by name" />
+                </div>
+                <div class="col-md-3">
+                    <select name="city" class="form-select">
+                        <option value="">-- city --</option>
+                        {% for city in cities %}
+                            <option value="{{ city.id }}"
+                                {% if filters.city == city.id %}selected{% endif %}>
+                                {{ city.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="country" class="form-select">
+                        <option value="">-- Country --</option>
+                        {% for country in countries %}
+                            <option value="{{ country.id }}"
+                                {% if filters.country == country.id %}selected{% endif %}>
+                                {{ country.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <a href="{{ path('app_city') }}" class="btn btn-outline-secondary">Reset</a>
+                    <a href="{{ path('app_city_add') }}" class="btn btn-success">+ Add City</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <a href="{{ path('app_index') }}" class="btn btn-primary">Homepage</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Street Name</th>
+                <th>Postcode</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for address in addresses %}
+                <tr>
+                    <td>{{ address.id }}</td>
+                    <td>{{ address.streetName}}</td>
+                    <td>{{ address.postcode }}</td>
+                    <td>{{ address.city.name }}</td>
+                    <td>{{ address.country.name }}</td>
+                    <td>
+                        <a href="{{ path('app_address_edit', {'id': address.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ path('app_address_delete', {'id': address.id}) }}" class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this country?')">Delete</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No Addresses found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -6,13 +6,13 @@
     <h1 class="mb-4">Country List</h1>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <form method="get" action="{{ path('app_city') }}" class="d-flex" role="search">
+        <form method="get" action="{{ path('app_country') }}" class="d-flex" role="search">
             <input type="search" name="search" value="{{ app.request.get('search') }}"
                    class="form-control me-2" placeholder="Search city name..." />
             <button class="btn btn-outline-secondary" type="submit">Search</button>
         </form>
 
-        <a href="{{ path('app_city_add') }}" class="btn btn-success">+ Add City</a>
+        <a href="{{ path('app_country_add') }}" class="btn btn-success">+ Add Country</a>
         <a href="{{ path('app_index') }}" class="btn btn-success">Homepage</a>
     </div>
 

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Add Address {% endblock %}
+
+{% block body %}
+<h1>Add Address</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.country, {'attr': {'id': 'address_country'}}) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.streetName) }}
+    {{ form_row(form.postcode) }}
+    <button class="btn btn-success">Save</button>
+{{ form_end(form) }}
+
+<a href="{{ path('app_address') }}" class="btn btn-secondary mt-3">← Back to list</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const countrySelect = document.getElementById('address_type_form_country');
+        const citySelect = document.getElementById('address_type_form_city');
+        
+        if (countrySelect && citySelect) {
+            countrySelect.addEventListener('change', function () {
+                const countryId = this.value;
+                citySelect.innerHTML = '<option>Loading...</option>';
+
+                fetch('/get-cities/' + countryId)
+                    .then(res => res.json())
+                    .then(data => {
+                        citySelect.innerHTML = '<option value="">Select a city</option>';
+                        data.forEach(city => {
+                            citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                        });
+                    });
+            });
+        }
+    });
+</script>
+
+{% endblock %}

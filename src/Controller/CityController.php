@@ -56,7 +56,7 @@ class CityController extends AbstractController
     }
 
     #[Route('/city/add', name: 'app_city_add')]
-    public function addCity(Request $request, EntityManagerInterface $em, CountryRepository $countryRepo)
+    public function addCity(Request $request, EntityManagerInterface $em, CountryRepository $countryRepository, CityRepository $cityRepository)
     {
         if ($request->isMethod('POST')) {
             $countryId = $request->request->get('country');
@@ -68,17 +68,34 @@ class CityController extends AbstractController
                 return $this->redirectToRoute('app_city_add');
             }
 
-            $country = $countryRepo->find($countryId);
+            $country = $countryRepository->find($countryId);
+            $errors = [];
 
             foreach ($cities as $cityName) {
-                if (trim($cityName) !== '') {
-                    $city = new City();
-                    $city->setName($cityName);
-                    $city->setCountry($country);
-                    $city->setActive($active);
+                $existing = $cityRepository->findOneBy([
+                    'name' => $cityName,
+                    'country' => $country,
+                    'isDeleted' => false,
+                ]);
 
-                    $em->persist($city);
+                if ($existing) {
+                    $errors[] = "City <strong>$cityName</strong> already exists in <strong>{$country->getName()}</strong>.";
                 }
+            }
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error);
+                }
+                return $this->redirectToRoute('app_city_add');
+            }
+
+            foreach ($cities as $cityName) {
+                $city = new City();
+                $city->setName($cityName);
+                $city->setCountry($country);
+                $city->setActive($active);
+                $em->persist($city);
             }
 
             $em->flush();
@@ -88,10 +105,9 @@ class CityController extends AbstractController
         }
 
         return $this->render('city/add.html.twig', [
-            'countries' => $countryRepo->findAll(),
+            'countries' => $countryRepository->findAll(),
         ]);
     }
-
 
     #[Route('/city/edit/{id}', name: 'app_city_edit')]
     public function editCity(Request $request, CityRepository $cityRepository, EntityManagerInterface $entityManager, int $id)
@@ -106,6 +122,8 @@ class CityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'City updated successfully.');
             return $this->redirectToRoute('app_city');
         }
 
@@ -126,6 +144,7 @@ class CityController extends AbstractController
         $city->setIsDeleted(true);
         $entityManager->flush();
 
+        $this->addFlash('success', 'City deleted successfully.');
         return $this->redirectToRoute('app_city');
     }
 }
